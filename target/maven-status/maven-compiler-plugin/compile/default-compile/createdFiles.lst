@@ -1,7 +1,12 @@
+web\modele\CheckConnexionAction.class
+web\modele\ConnexionAction.class
 web\controleur\ActionServlet.class
 web\modele\Action.class
+web\vue\SuccesSerialisation.class
 web\vue\ListeDemandesSerialisation.class
 web\test\ServiceTest.class
 web\vue\Serialisation.class
+web\controleur\InscriptionServlet.class
 web\modele\ConsulterListeDemandesAction.class
 web\test\DemandeTest.class
+web\modele\InscriptionAction.class

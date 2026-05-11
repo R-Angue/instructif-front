@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>INSTRUCT'IF</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Créer un compte élève</h1>
+        <p>
+            Déjà un compte ? <a href ="connexion.html"> Se connecter</a>
+        </p>
+
+        <p>
+            Nom : <br>
+            <input id="ins_nom" required>
+        </p>
+
+        <p>
+            Prenom <br>
+            <input id="ins_prenom" required>
+        </p>
+
+        <p>
+            Date De naissance  <br>
+            <input type="date" id="ins_date" required>
+        </p>
+
+        <p>
+            email <br>
+            <input id="ins_email" required>
+        </p>
+
+        <p>
+            identifiant <br>
+            <input id="ins_id" required>
+        </p>
+
+        <p>
+            Classe <br>
+            <select id="ins_classe" required>
+                <option value="">Choose</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+
+            </select>
+        </p>
+
+        <p>
+            Code UAI de l'établissement <br>
+            <input id="ins_uai" required>
+        </p>
+
+        <button id="get_etablissement">Récupérer l'établissement</button>
+
+        <p>
+            Etablissement <br>
+            <input id="ins_etablissement" value="" required>
+        </p>
+
+        <p>
+            Mot de passe <br>
+            <input id="ins_mdp" required>
+        </p>
+        <button id="inscription">Valider l'inscription></button>
+
+        <script>
+            async function initPage() {
+                console.log("Initialisation de la page");
+                document.getElementById('inscription').addEventListener('click', function () {
+                    console.log("Click sur le bouton 'Inscription'");
+                    inscription();
+                });
+            }
+            ;
+            async function inscription() {
+                let url = 'http://localhost:8080/mavenproject/ActionServlet?todo=inscription';
+                let params = {
+                    ins_nom: document.getElementById("ins_nom").value,
+                    ins_prenom: document.getElementById("ins_prenom").value,
+                    ins_date: document.getElementById("ins_date").value,
+                    ins_email: document.getElementById("ins_email").value,
+                    ins_classe: document.getElementById("ins_classe").value,
+                    ins_id: document.getElementById("ins_id").value,
+                    ins_uai: document.getElementById("ins_uai").value,
+                    ins_etablissement: document.getElementById("ins_etablissement").value,
+                    ins_mdp: document.getElementById("ins_mdp").value
+                };
+
+                let jsonResponse = await fetch(url, {
+                    method: "POST",
+                    body:
+                            new URLSearchParams(params)
+                })
+                        .then((httpResponse) => {
+                            if (!httpResponse.ok) {
+                                throw "HTTP Error " + httpResponse.status;
+                            }
+                            return httpResponse.json();
+                        })
+                        .catch((error) => {
+                            console.log("[ AJAX ERROR ]", error);
+                            return null;
+                        });
+                if (jsonResponse) {
+                    if (jsonResponse.succes) {
+                        window.location = "./accueil.html";
+                    }
+                }
+            }
+            window.onload = initPage;
+        </script>
+    </body>
+
+
+</html>

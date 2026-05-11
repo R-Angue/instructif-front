@@ -4,6 +4,7 @@
  */
 package web.controleur;
 
+import dao.JpaUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,8 +12,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import metier.modele.Eleve;
+import metier.service.Service;
 import web.modele.Action;
+import web.modele.CheckConnexionAction;
+import web.modele.ConnexionAction;
 import web.modele.ConsulterListeDemandesAction;
+import web.modele.InscriptionAction;
+import web.vue.SuccesSerialisation;
 import web.vue.ListeDemandesSerialisation;
 import web.vue.Serialisation;
 
@@ -22,6 +30,19 @@ import web.vue.Serialisation;
  */
 @WebServlet(name = "ActionServlet", urlPatterns = {"/ActionServlet"})
 public class ActionServlet extends HttpServlet {
+    
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        JpaUtil.creerFabriquePersistance();
+    }
+
+    // Cette méthode s'exécute UNE SEULE FOIS quand le serveur s'arrête
+    @Override
+    public void destroy() {
+        JpaUtil.fermerFabriquePersistance();
+        super.destroy();
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,13 +57,44 @@ public class ActionServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            
+            Action action;
+            Serialisation serialisation;
+            
+            System.out.println("resultat du todo : " + request.getParameter("todo"));
+            
+            switch (request.getParameter("todo")) {
+                case "consulter-liste-demandes":
+                    action = new ConsulterListeDemandesAction();
+                    serialisation = new ListeDemandesSerialisation();
 
-            Action action = new ConsulterListeDemandesAction();
-            Serialisation serialisation = new ListeDemandesSerialisation();
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
 
-            if (request.getParameter("todo").equals("consulter-liste-demandes")) {
-                action.execute(request);
-                serialisation.appliquer(request, response);
+                case "connexion":
+                    action = new ConnexionAction();
+                    serialisation = new SuccesSerialisation();
+                    
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
+                    
+                case "inscription":
+                    action = new InscriptionAction();
+                    serialisation = new SuccesSerialisation();
+                    
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
+                    
+                case "check_connexion":
+                    action = new CheckConnexionAction();
+                    serialisation = new SuccesSerialisation();
+                    
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
             }
         }
     }
