@@ -1,129 +1,157 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
 <html>
     <head>
-        <title>INSTRUCT'IF</title>
+        <title>INSTRUCT'IF - Inscription</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="components/header.js" type="text/javascript" defer></script>
         <link rel="stylesheet" href="styles/global.css">
+
+        <style>
+            main {
+                max-width: 500px;
+            }
+
+            .info-box {
+                background: #f8fafc;
+                border-radius: 12px;
+                padding: 15px;
+                border: 1px solid #edf2f7;
+                font-size: 14px;
+                margin-top: 10px;
+                text-align: left;
+            }
+        </style>
     </head>
     <body>
     <header-component></header-component>
 
     <main>
         <h1>Créer un compte élève</h1>
-        <p>
-            Déjà un compte ? <a href ="connexion.html"> Se connecter</a>
+        <p class="footer-text" style="margin-bottom: 30px; margin-top: 0;">
+            Déjà un compte ? <a href="connexion.html">Se connecter</a>
         </p>
 
-        <p>
-            Nom : <br>
-            <input id="ins_nom" required>
-        </p>
+        <div class="form-grid">
+            <div class="field-group">
+                <label>Nom</label>
+                <input id="ins_nom" placeholder="Martin" required>
+            </div>
+            <div class="field-group">
+                <label>Prénom</label>
+                <input id="ins_prenom" placeholder="Alice" required>
+            </div>
 
-        <p>
-            Prenom <br>
-            <input id="ins_prenom" required>
-        </p>
+            <div class="field-group full-width">
+                <label>Date de naissance</label>
+                <input type="date" id="ins_date" required>
+            </div>
 
-        <p>
-            Date De naissance  <br>
-            <input type="date" id="ins_date" required>
-        </p>
+            <div class="field-group full-width">
+                <label>Adresse e-mail</label>
+                <input type="email" id="ins_email" placeholder="alice@email.com" required>
+            </div>
 
-        <p>
-            email <br>
-            <input id="ins_email" required>
-        </p>
+            <div class="field-group full-width">
+                <label>Classe</label>
+                <select id="ins_classe" required>
+                    <option value="" disabled selected>Choisir...</option>
+                    <option value="6">6ème</option>
+                    <option value="5">5ème</option>
+                    <option value="4">4ème</option>
+                    <option value="3">3ème</option>
+                </select>
+            </div>
 
-        <p>
-            identifiant <br>
-            <input id="ins_id" required>
-        </p>
+            <div class="field-group full-width">
+                <label>Code UAI de l'établissement</label>
+                <input id="ins_uai" placeholder="0690123A" required>
 
-        <p>
-            Classe <br>
-            <select id="ins_classe" required>
-                <option value="">Choose</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
+                <button id="get_etablissement" class="btn-api">
+                    <span>🔄</span> Récupération de l'établissement via API...
+                </button>
+            </div>
 
-            </select>
-        </p>
+            <div class="field-group full-width">
+                <div class="info-box">
+                    <strong>Établissement :</strong> 
+                    <input id="ins_etablissement" readonly 
+                           style="border:none; background:transparent; padding:0; width:auto; font-weight:bold; color:#1a202c;">
+                </div>
+            </div>
 
-        <p>
-            Code UAI de l'établissement <br>
-            <input id="ins_uai" required>
-        </p>
+            <div class="field-group full-width">
+                <label>Mot de passe</label>
+                <input type="password" id="ins_mdp" placeholder="••••••••" required>
+            </div>
+        </div>
 
-        <button id="get_etablissement">Récupérer l'établissement</button>
+        <button id="inscription" class="btn-primary" style="margin-top: 20px;">Valider l'inscription</button>
 
-        <p>
-            Etablissement <br>
-            <input id="ins_etablissement" value="" required>
-        </p>
+        <div id="success-msg" class="alert alert-success">✓ Compte créé avec succès !</div>
+        <div id="error-msg" class="alert alert-error">⚠ Erreur lors de l'inscription</div>
+        <div id="uai-error" class="alert alert-error">⚠ Erreur : UAI invalide</div>
 
-        <p>
-            Mot de passe <br>
-            <input id="ins_mdp" required>
-        </p>
-        <button id="inscription">Valider l'inscription></button>
     </main>
-
 
     <script>
         async function initPage() {
-            console.log("Initialisation de la page");
-            document.getElementById('inscription').addEventListener('click', function () {
-                console.log("Click sur le bouton 'Inscription'");
-                inscription();
-            });
+            document.getElementById('inscription').addEventListener('click', inscription);
+            document.getElementById('get_etablissement').addEventListener('click', getEtablissement);
         }
-        ;
+
+        async function getEtablissement() {
+            const uaiError = document.getElementById("uai-error");
+            const etablissementInput = document.getElementById("ins_etablissement");
+
+            let url = 'http://localhost:8080/mavenproject/ActionServlet?todo=check_etablissement';
+            let params = {uai: document.getElementById("ins_uai").value};
+
+            let jsonResponse = await fetch(url, {
+                method: "POST",
+                body: new URLSearchParams(params)
+            }).then(res => res.json()).catch(() => null);
+
+            if (jsonResponse && jsonResponse.nom !== "null") {
+                uaiError.style.display = "none";
+                etablissementInput.value = jsonResponse.nom;
+            } else {
+                uaiError.style.display = "flex";
+                etablissementInput.value = "";
+            }
+        }
+
         async function inscription() {
-            let url = 'http://localhost:8080/mavenproject/ActionServlet?todo=inscription';
+            const errorMsg = document.getElementById("error-msg");
+            const successMsg = document.getElementById("success-msg");
+
             let params = {
                 ins_nom: document.getElementById("ins_nom").value,
                 ins_prenom: document.getElementById("ins_prenom").value,
                 ins_date: document.getElementById("ins_date").value,
                 ins_email: document.getElementById("ins_email").value,
                 ins_classe: document.getElementById("ins_classe").value,
-                ins_id: document.getElementById("ins_id").value,
+                ins_id: document.getElementById("ins_email").value, // Id basé sur email par défaut
                 ins_uai: document.getElementById("ins_uai").value,
                 ins_etablissement: document.getElementById("ins_etablissement").value,
                 ins_mdp: document.getElementById("ins_mdp").value
             };
 
-            let jsonResponse = await fetch(url, {
+            let jsonResponse = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=inscription', {
                 method: "POST",
-                body:
-                        new URLSearchParams(params)
-            })
-                    .then((httpResponse) => {
-                        if (!httpResponse.ok) {
-                            throw "HTTP Error " + httpResponse.status;
-                        }
-                        return httpResponse.json();
-                    })
-                    .catch((error) => {
-                        console.log("[ AJAX ERROR ]", error);
-                        return null;
-                    });
-            if (jsonResponse) {
-                if (jsonResponse.succes) {
-                    window.location = "./accueil.html";
-                }
+                body: new URLSearchParams(params)
+            }).then(res => res.json()).catch(() => null);
+
+            if (jsonResponse?.succes) {
+                errorMsg.style.display = "none";
+                successMsg.style.display = "flex";
+                setTimeout(() => window.location = "./", 1500);
+            } else {
+                errorMsg.style.display = "flex";
             }
         }
+
         window.onload = initPage;
     </script>
 </body>
-
-
 </html>

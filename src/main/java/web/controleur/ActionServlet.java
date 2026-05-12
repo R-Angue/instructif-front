@@ -17,9 +17,11 @@ import metier.modele.Eleve;
 import metier.service.Service;
 import web.modele.Action;
 import web.modele.CheckConnexionAction;
+import web.modele.CheckEtablissementExiste;
 import web.modele.ConnexionAction;
 import web.modele.ConsulterListeDemandesAction;
 import web.modele.InscriptionAction;
+import web.vue.EtablissementSerialisation;
 import web.vue.SuccesSerialisation;
 import web.vue.ListeDemandesSerialisation;
 import web.vue.Serialisation;
@@ -91,6 +93,13 @@ public class ActionServlet extends HttpServlet {
                 case "check_connexion":
                     action = new CheckConnexionAction();
                     serialisation = new SuccesSerialisation();
+                    
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
+                case "check_etablissement":
+                    action = new CheckEtablissementExiste();
+                    serialisation = new EtablissementSerialisation();
                     
                     action.execute(request);
                     serialisation.appliquer(request, response);
