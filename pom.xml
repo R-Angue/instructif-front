@@ -5,7 +5,7 @@
     <artifactId>mavenproject</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>mavenproject-1.0-SNAPSHOT</name>
+    <name>instructif-front</name>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
