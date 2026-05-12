@@ -1,87 +1,143 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
 <html>
     <head>
-        <title>INSTRUCT'IF</title>
+        <title>INSTRUCT'IF - Connexion</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="components/header.js" type="text/javascript" defer></script>
+        <link rel="stylesheet" href="styles/global.css">
+
+        <style>
+            .toggle-wrapper {
+                background: #f1f3f5;
+                border-radius: 14px;
+                padding: 4px;
+                margin-bottom: 30px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .toggle-wrapper div {
+                padding: 12px;
+                z-index: 2;
+                font-weight: 600;
+                transition: color 0.3s;
+                color: #718096;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .toggle-wrapper::before {
+                content: '';
+                position: absolute;
+                width: calc(50% - 8px);
+                height: calc(100% - 8px);
+                top: 4px;
+                left: 4px;
+                background: white;
+                border-radius: 11px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1;
+            }
+
+            #toggle:checked + .toggle-wrapper::before {
+                transform: translateX(100%);
+            }
+            #toggle:checked + .toggle-wrapper div:last-child {
+                color: #1d63ed;
+            }
+            #toggle:not(:checked) + .toggle-wrapper div:first-child {
+                color: #1d63ed;
+            }
+            .toggleCheckbox {
+                display: none;
+            }
+
+            /* Labels de formulaires spécifiques */
+            .field-group {
+                text-align: left;
+                margin-bottom: 20px;
+            }
+            .field-group label {
+                display: block;
+                font-size: 11px;
+                font-weight: 700;
+                color: #4a5568;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+                letter-spacing: 0.05em;
+            }
+        </style>
     </head>
+
     <body>
-        <h1>Bon Retour</h1>
+    <header-component></header-component>
 
-        <p>
-            Email : <br>
-            <input id="login_email" required>
-        </p>
+    <main>
+        <h1>Bon retour !</h1>
+        <p style="color: #718096; margin-bottom: 30px;">Connectez-vous à votre compte</p>
 
-        <p>
-            Mot de passe : <br>
-            <input type="password" id="login_mdp" required>
-        </p>
+        <div class="container">
+            <input type="checkbox" id="toggle" class="toggleCheckbox" />
+            <label for="toggle" class="toggle-wrapper">
+                <div>👶 Élève</div>   
+                <div>🎓 Intervenant</div>
+            </label>
 
-        <button id="connexion">Se connecter></button>
+            <div class="field-group">
+                <label for="login_email">Adresse E-mail</label>
+                <input type="email" id="login_email" placeholder="alice.martin@email.com" required>
+            </div>
 
-        <script>
-            async function initPage() {
-                console.log("Initialisation de la page");
-                document.getElementById('connexion').addEventListener('click', function () {
-                    console.log("Click sur le bouton 'Connexion'");
-                    connexion();
-                });
+            <div class="field-group">
+                <label for="login_mdp">Mot de passe</label>
+                <input type="password" id="login_mdp" placeholder="••••••••" required>
+            </div>
 
-                let url = 'http://localhost:8080/mavenproject/ActionServlet?todo=check_connexion';
-                let jsonResponse = await fetch(url)
-                        .then(
-                                function (httpResponse) {
-                                    return httpResponse.json();
-                                }
-                        )
-                        .catch(
-                                function (error) {
-                                    console.log(error);
-                                    return null;
-                                }
-                        );
-                console.log(jsonResponse);
-                if (jsonResponse) {
-                    if (jsonResponse.succes) {
-                        window.location = "./profil_eleve.html";
-                    }
-                }
+            <button id="connexion" class="btn-primary">Se connecter</button>
+
+            <div id="error-msg" class="alert alert-error">
+                Identifiants incorrects
+            </div>
+
+            <p class="footer-text">
+                Pas encore de compte ? <a href="./inscription.html">Créer un compte</a>
+            </p>
+        </div>
+    </main>
+
+    <script>
+        async function initPage() {
+            document.getElementById('connexion').addEventListener('click', connexion);
+            let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=check_connexion').then(r => r.json()).catch(() => null);
+            if (res?.succes)
+                window.location = "./profil_eleve.html";
+        }
+
+        async function connexion() {
+            const errorDiv = document.getElementById("error-msg");
+            
+            const params = new URLSearchParams({
+                login_email: document.getElementById("login_email").value,
+                login_mdp: document.getElementById("login_mdp").value
+            });
+            let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=connexion', {
+                method: "POST",
+                body: params
+            }).then(r => r.json()).catch(() => null);
+            if (res?.succes) {
+                errorDiv.style.display = "none";
+                window.location = "./profil_eleve.html";
+            } else {
+                errorDiv.style.display = "flex";
             }
-            ;
-            async function connexion() {
-                let url = 'http://localhost:8080/mavenproject/ActionServlet?todo=connexion';
-                let params = {
-                    login_email: document.getElementById("login_email").value,
-                    login_mdp: document.getElementById("login_mdp").value
-                };
-
-                let jsonResponse = await fetch(url, {
-                    method: "POST",
-                    body:
-                            new URLSearchParams(params)
-                })
-                        .then((httpResponse) => {
-                            if (!httpResponse.ok) {
-                                throw "HTTP Error " + httpResponse.status;
-                            }
-                            return httpResponse.json();
-                        })
-                        .catch((error) => {
-                            console.log("[ AJAX ERROR ]", error);
-                            return null;
-                        });
-                if (jsonResponse) {
-                    if (jsonResponse.succes) {
-                        window.location = "./profil_eleve.html";
-                    }
-                }
-            }
-            window.onload = initPage;
-        </script>
-    </body>
+        }
+        window.onload = initPage;
+    </script>
+</body>
 </html>

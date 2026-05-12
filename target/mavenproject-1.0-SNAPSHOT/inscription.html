@@ -8,8 +8,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <title>INSTRUCT'IF</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="components/header.js" type="text/javascript" defer></script>
+        <link rel="stylesheet" href="styles/global.css">
     </head>
     <body>
+    <header-component></header-component>
+
+    <main>
         <h1>Créer un compte élève</h1>
         <p>
             Déjà un compte ? <a href ="connexion.html"> Se connecter</a>
@@ -69,54 +74,56 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <input id="ins_mdp" required>
         </p>
         <button id="inscription">Valider l'inscription></button>
+    </main>
 
-        <script>
-            async function initPage() {
-                console.log("Initialisation de la page");
-                document.getElementById('inscription').addEventListener('click', function () {
-                    console.log("Click sur le bouton 'Inscription'");
-                    inscription();
-                });
-            }
-            ;
-            async function inscription() {
-                let url = 'http://localhost:8080/mavenproject/ActionServlet?todo=inscription';
-                let params = {
-                    ins_nom: document.getElementById("ins_nom").value,
-                    ins_prenom: document.getElementById("ins_prenom").value,
-                    ins_date: document.getElementById("ins_date").value,
-                    ins_email: document.getElementById("ins_email").value,
-                    ins_classe: document.getElementById("ins_classe").value,
-                    ins_id: document.getElementById("ins_id").value,
-                    ins_uai: document.getElementById("ins_uai").value,
-                    ins_etablissement: document.getElementById("ins_etablissement").value,
-                    ins_mdp: document.getElementById("ins_mdp").value
-                };
 
-                let jsonResponse = await fetch(url, {
-                    method: "POST",
-                    body:
-                            new URLSearchParams(params)
-                })
-                        .then((httpResponse) => {
-                            if (!httpResponse.ok) {
-                                throw "HTTP Error " + httpResponse.status;
-                            }
-                            return httpResponse.json();
-                        })
-                        .catch((error) => {
-                            console.log("[ AJAX ERROR ]", error);
-                            return null;
-                        });
-                if (jsonResponse) {
-                    if (jsonResponse.succes) {
-                        window.location = "./accueil.html";
-                    }
+    <script>
+        async function initPage() {
+            console.log("Initialisation de la page");
+            document.getElementById('inscription').addEventListener('click', function () {
+                console.log("Click sur le bouton 'Inscription'");
+                inscription();
+            });
+        }
+        ;
+        async function inscription() {
+            let url = 'http://localhost:8080/mavenproject/ActionServlet?todo=inscription';
+            let params = {
+                ins_nom: document.getElementById("ins_nom").value,
+                ins_prenom: document.getElementById("ins_prenom").value,
+                ins_date: document.getElementById("ins_date").value,
+                ins_email: document.getElementById("ins_email").value,
+                ins_classe: document.getElementById("ins_classe").value,
+                ins_id: document.getElementById("ins_id").value,
+                ins_uai: document.getElementById("ins_uai").value,
+                ins_etablissement: document.getElementById("ins_etablissement").value,
+                ins_mdp: document.getElementById("ins_mdp").value
+            };
+
+            let jsonResponse = await fetch(url, {
+                method: "POST",
+                body:
+                        new URLSearchParams(params)
+            })
+                    .then((httpResponse) => {
+                        if (!httpResponse.ok) {
+                            throw "HTTP Error " + httpResponse.status;
+                        }
+                        return httpResponse.json();
+                    })
+                    .catch((error) => {
+                        console.log("[ AJAX ERROR ]", error);
+                        return null;
+                    });
+            if (jsonResponse) {
+                if (jsonResponse.succes) {
+                    window.location = "./accueil.html";
                 }
             }
-            window.onload = initPage;
-        </script>
-    </body>
+        }
+        window.onload = initPage;
+    </script>
+</body>
 
 
 </html>
