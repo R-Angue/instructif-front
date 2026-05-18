@@ -12,16 +12,21 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import metier.modele.Eleve;
-import metier.service.Service;
 import web.modele.Action;
 import web.modele.CheckConnexionAction;
 import web.modele.CheckEtablissementExiste;
-import web.modele.ConnexionAction;
+import web.modele.ConnexionEleveAction;
+import web.modele.ConnexionIntervenantAction;
 import web.modele.ConsulterListeDemandesAction;
+import web.modele.GetEleveFromIdAction;
+import web.modele.GetIntervenantFromIdAction;
+import web.modele.GetMatiereAction;
 import web.modele.InscriptionAction;
+import web.modele.ValiderDemandeAction;
 import web.vue.EtablissementSerialisation;
+import web.vue.GetEleveFromIdSerialisation;
+import web.vue.GetIntervenantFromIdSerialisation;
+import web.vue.GetMatiereSerialisation;
 import web.vue.SuccesSerialisation;
 import web.vue.ListeDemandesSerialisation;
 import web.vue.Serialisation;
@@ -32,7 +37,7 @@ import web.vue.Serialisation;
  */
 @WebServlet(name = "ActionServlet", urlPatterns = {"/ActionServlet"})
 public class ActionServlet extends HttpServlet {
-    
+
     @Override
     public void init() throws ServletException {
         super.init();
@@ -59,12 +64,12 @@ public class ActionServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            
+
             Action action;
             Serialisation serialisation;
-            
+
             System.out.println("resultat du todo : " + request.getParameter("todo"));
-            
+
             switch (request.getParameter("todo")) {
                 case "consulter-liste-demandes":
                     action = new ConsulterListeDemandesAction();
@@ -74,36 +79,68 @@ public class ActionServlet extends HttpServlet {
                     serialisation.appliquer(request, response);
                     break;
 
-                case "connexion":
-                    action = new ConnexionAction();
+                case "connexion_eleve":
+                    action = new ConnexionEleveAction();
                     serialisation = new SuccesSerialisation();
-                    
+
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;
-                    
+
+                case "connexion_intervenant":
+                    action = new ConnexionIntervenantAction();
+                    serialisation = new SuccesSerialisation();
+
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
+
                 case "inscription":
                     action = new InscriptionAction();
                     serialisation = new SuccesSerialisation();
-                    
+
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;
-                    
+
                 case "check_connexion":
                     action = new CheckConnexionAction();
                     serialisation = new SuccesSerialisation();
-                    
+
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;
                 case "check_etablissement":
                     action = new CheckEtablissementExiste();
                     serialisation = new EtablissementSerialisation();
+
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
+                case "get_eleve_from_id":
+                    action = new GetEleveFromIdAction();
+                    serialisation = new GetEleveFromIdSerialisation();
+
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
+                case "get_intervenant_from_id":
+                    action = new GetIntervenantFromIdAction();
+                    serialisation = new GetIntervenantFromIdSerialisation();
+
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
+                case "get_matiere" : 
+                    action = new GetMatiereAction();
+                    serialisation = new GetMatiereSerialisation();
                     
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;
+                    
+                case "valider_demande" : 
+                    action = new ValiderDemandeAction();
             }
         }
     }

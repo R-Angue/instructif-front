@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>INSTRUCT'IF</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>profil intervenant</h1>
+    </body>
+</html>
+
+<script>
+        async function initPage() {
+            //document.getElementById('connexion').addEventListener('click', connexion);
+            let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_intervenant_from_id').then(r => r.json()).catch(() => null);
+            console.log(res);
+        }
+        
+        window.onload = initPage;
+</script>

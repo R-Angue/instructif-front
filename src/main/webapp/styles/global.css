@@ -29,7 +29,6 @@ input {
     background: #f8fafc;
     box-sizing: border-box;
     font-size: 16px;
-    transition: border-color 0.2s ease;
 }
 
 input:focus {
@@ -47,7 +46,6 @@ input:focus {
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
 .btn-primary:hover {
@@ -159,7 +157,6 @@ select {
     background-repeat: no-repeat;
     background-position: right 16px center;
     background-size: 16px;
-    transition: border-color 0.2s;
 }
 
 select:focus {
@@ -186,4 +183,20 @@ select:focus {
 
 .btn-api:hover {
     background-color: #dbeafe;
+}
+
+textarea {
+    resize: none;
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #edf2f7;
+    border-radius: 12px;
+    background: #f8fafc;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #1d63ed;
 }

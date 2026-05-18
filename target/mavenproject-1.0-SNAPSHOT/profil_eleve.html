@@ -11,5 +11,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     </head>
     <body>
         <h1>profil eleve</h1>
+        <a href='./matieres.html'><button>Matières</button></a>
+        <a href='./demander-soutien.html'><button>Demander de l'aide</button></a>
     </body>
 </html>
+
+<script>
+        async function initPage() {
+            let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_eleve_from_id').then(r => r.json()).catch(() => null);
+            // TODO: Remplir la page
+        }
+        
+        window.onload = initPage;
+</script>

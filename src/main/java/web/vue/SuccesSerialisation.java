@@ -21,9 +21,15 @@ public class SuccesSerialisation extends Serialisation {
     public void appliquer(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (PrintWriter out = response.getWriter()) {
             Boolean succes = (Boolean) request.getAttribute("succes");
+            String type = (String) request.getAttribute("type");
             JsonObjectBuilder jsonContainer = Json.createObjectBuilder();
 
             jsonContainer.add("succes", succes);
+            if (type == null) {
+                jsonContainer.addNull("type");
+            } else {
+                jsonContainer.add("type", type);
+            }
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

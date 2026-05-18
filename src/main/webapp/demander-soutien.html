@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="components/header.js" type="text/javascript" defer></script>
+        <link rel="stylesheet" href="styles/global.css">
+    </head>
+    <body>
+    <header-component></header-component>
+    <main>
+        <h1>Demander de l'aide</h1>
+        <p>Un intervenant sera disponible immédiatement</p>
+        <div class="field-group">
+            <label>Matière</label>
+            <select id='matiereDropdown'>
+                <option value="" disabled selected>Choisir...</option>
+            </select>
+        </div>
+
+        <div class="field-group">
+            <label>Thème</label>
+            <select id='themeDropdown'>
+                <option value="" disabled selected>Choisir...</option>
+            </select>
+        </div>
+
+        <div class="field-group">
+            <label>Décris ton problème</label>
+            <textarea id="description" rows="4" cols="50" placeholder='Problème...'></textarea>
+        </div>
+
+        <button id="valider" class="btn-primary">Valider la demande</button>
+    </main>
+
+</body>
+
+<script>
+    var matieres;
+    var matiereDropdown = document.getElementById('matiereDropdown');
+    var themeDropdown = document.getElementById('themeDropdown');
+
+    async function initPage() {
+        document.getElementById('valider').addEventListener('click', validerDemande);
+        document.getElementById('matiereDropdown').addEventListener('change', updateThemeDropdown);
+
+        let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_matiere').then(r => r.json()).catch(() => null);
+        let matieresJSON = JSON.stringify(res);
+        matieres = JSON.parse(matieresJSON);
+
+        // remplir le dropdown de matières
+        Object.keys(matieres).forEach((matiere) => {
+            var opt = document.createElement('option');
+            opt.value = matiere;
+            opt.innerHTML = matiere;
+            matiereDropdown.appendChild(opt);
+        });
+    }
+
+    async function updateThemeDropdown() {
+        let matiereActuelle = matiereDropdown.value;
+
+        var i, L = themeDropdown.options.length - 1;
+        for (i = L; i > 0; i--) {
+            themeDropdown.remove(i);
+        }
+
+        // remplir le dropdown de themes
+        matieres[matiereActuelle].forEach((theme) => {
+            var opt = document.createElement('option');
+            opt.value = theme["id"];
+            opt.innerHTML = theme["nom"];
+            themeDropdown.appendChild(opt);
+        });
+
+        themeDropdown.value = "";
+    }
+
+    async function validerDemande() {
+        //const errorDiv = document.getElementById("error-msg");
+
+        const params = new URLSearchParams({
+            demande_theme: document.getElementById("themeDropdown").value,
+            demande_commentaire: document.getElementById("description").value
+        });
+
+
+
+        let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=valider-demande', {
+            method: "POST",
+            body: params
+        }).then(r => r.json()).catch(() => null);
+
+        
+    }
+
+    window.onload = initPage;
+</script>
+
+</html>

@@ -116,25 +116,44 @@
             document.getElementById('connexion').addEventListener('click', connexion);
             let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=check_connexion').then(r => r.json()).catch(() => null);
             if (res?.succes)
-                window.location = "./profil_eleve.html";
+                window.location = `./profil_${res.type}.html`;
         }
 
         async function connexion() {
             const errorDiv = document.getElementById("error-msg");
-            
+
             const params = new URLSearchParams({
                 login_email: document.getElementById("login_email").value,
                 login_mdp: document.getElementById("login_mdp").value
             });
-            let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=connexion', {
-                method: "POST",
-                body: params
-            }).then(r => r.json()).catch(() => null);
-            if (res?.succes) {
-                errorDiv.style.display = "none";
-                window.location = "./profil_eleve.html";
-            } else {
-                errorDiv.style.display = "flex";
+            
+            console.log(document.getElementById("toggle").checked);
+            if (!document.getElementById("toggle").checked) {
+                let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=connexion_eleve', {
+                    method: "POST",
+                    body: params
+                }).then(r => r.json()).catch(() => null);
+
+                if (res?.succes) {
+                    errorDiv.style.display = "none";
+                    window.location = "./profil_eleve.html";
+                } else {
+                    errorDiv.style.display = "flex";
+                }
+
+            }
+            else {
+                let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=connexion_intervenant', {
+                    method: "POST",
+                    body: params
+                }).then(r => r.json()).catch(() => null);
+
+                if (res?.succes) {
+                    errorDiv.style.display = "none";
+                    window.location = "./profil_intervenant.html";
+                } else {
+                    errorDiv.style.display = "flex";
+                }
             }
         }
         window.onload = initPage;

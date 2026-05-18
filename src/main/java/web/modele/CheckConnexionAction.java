@@ -6,11 +6,6 @@ package web.modele;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import metier.modele.Eleve;
-import metier.service.Service;
-import web.test.DemandeTest;
-import web.test.ServiceTest;
 
 /**
  *
@@ -28,6 +23,7 @@ public class CheckConnexionAction extends Action {
             request.setAttribute("succes", false);
         } else {
             request.setAttribute("succes", true);
+            request.setAttribute("type", (String) session.getAttribute("type"));
         }
     }
 ;
