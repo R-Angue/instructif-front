@@ -1,26 +1,215 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
 <html>
-    <head>
-        <title>INSTRUCT'IF</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <h1>profil eleve</h1>
-        <a href='./matieres.html'><button>Matières</button></a>
-        <a href='./demander-soutien.html'><button>Demander de l'aide</button></a>
-    </body>
-</html>
-
-<script>
-        async function initPage() {
-            let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_eleve_from_id').then(r => r.json()).catch(() => null);
-            // TODO: Remplir la page
+<head>
+    <title>INSTRUCT'IF - Mon Profil</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/global.css">
+    <script src="components/header.js" type="text/javascript" defer></script>
+    
+    <style>
+        /* Surcharge du main pour cette page (plus large que la page de connexion) */
+        main {
+            max-width: 600px;
+            margin-top: 30px;
         }
+
+        /* Actions en haut à droite (Matières, Demander de l'aide) */
+        .top-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .link-text { color: #718096; text-decoration: none; font-weight: 600; font-size: 15px; }
+        .btn-teal {
+            background-color: #2a9d8f;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-teal:hover { background-color: #21867a; }
+
+        /* Bandeau Profil */
+        .bandeau {
+            background-color: #f7fafc; /* Fond gris très clair / bleuté */
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+        .avatar {
+            width: 72px;
+            height: 72px;
+            background-color: #cce0ff;
+            color: #1d63ed;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 800;
+        }
+        .info-user h1 { font-size: 24px; margin: 0; color: #1a202c; }
+        .info-user p { color: #718096; font-size: 14px; margin: 4px 0 8px 0; }
+        .badge {
+            background-color: #ebf4ff;
+            color: #1d63ed;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* Navigation par Onglets (Tabs) */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #edf2f7;
+            margin-bottom: 25px;
+        }
+        .tab {
+            padding: 12px 24px;
+            color: #a0aec0;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: -2px; /* Pour superposer la bordure */
+        }
+        .tab.active {
+            color: #1d63ed;
+            border-bottom: 2px solid #1d63ed;
+        }
+
+        /* Cartes d'informations */
+        h2 {
+            text-align: left;
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 12px;
+            margin-top: 30px;
+        }
+        .card {
+            background: white;
+            border: 1px solid #edf2f7;
+            border-radius: 16px;
+            padding: 0 20px;
+        }
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #edf2f7;
+            align-items: center;
+        }
+        .card-row:last-child { border-bottom: none; }
         
+        .card-label { color: #718096; font-size: 15px; }
+        .card-value { color: #1a202c; font-weight: 500; font-size: 15px; text-align: right; }
+        .text-blue { color: #1d63ed; }
+        .sub-value { color: #a0aec0; font-size: 13px; font-weight: 400; display: block; margin-top: 2px; }
+    </style>
+</head>
+
+<body>
+    <header-component></header-component>
+    
+    <main>
+        <div class="top-actions">
+            <a href='./matieres.html' class="link-text">Matières</a>
+            <a href='./demander-soutien.html' class="btn-teal">Demander de l'aide</a>
+        </div>
+
+        <div class="bandeau">
+            <div class="avatar" id="ui_initiales">--</div>
+            <div class="info-user">
+                <h1 id="ui_nom_complet">Chargement...</h1>
+                <p id="ui_sous_titre">--</p>
+                <span class="badge">Élève</span>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab">Historique</div>
+            <div class="tab active">Mon compte</div>
+        </div>
+
+        <h2>Informations personnelles</h2>
+        <div class="card">
+            <div class="card-row">
+                <span class="card-label">Nom</span>
+                <span class="card-value" id="ui_nom">--</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">Prénom</span>
+                <span class="card-value" id="ui_prenom">--</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">Date de naissance</span>
+                <span class="card-value" id="ui_date">--</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">Adresse e-mail</span>
+                <span class="card-value text-blue" id="ui_email">--</span>
+            </div>
+        </div>
+
+        <h2>Informations scolaires</h2>
+        <div class="card">
+            <div class="card-row">
+                <span class="card-label">Classe</span>
+                <span class="card-value" id="ui_classe">--</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">Code UAI</span>
+                <span class="card-value" id="ui_uai">--</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">Établissement</span>
+                <span class="card-value">
+                    <span id="ui_etab_nom">--</span>
+                    <span class="sub-value" id="ui_etab_ville">--</span>
+                </span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function initPage() {
+            try {
+                let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_eleve_from_id').then(r => r.json());
+
+                if (res && res.succes) {
+                    document.getElementById('ui_initiales').innerText = res.prenom.charAt(0) + res.nom.charAt(0);
+                    document.getElementById('ui_nom_complet').innerText = res.prenom + ' ' + res.nom;
+                    document.getElementById('ui_sous_titre').innerText = res.classe + 'ème · ' + res.etablissement.nom + ', ' + res.etablissement.commune;
+
+                    document.getElementById('ui_nom').innerText = res.nom;
+                    document.getElementById('ui_prenom').innerText = res.prenom;
+                    
+                    let parts = res.dateNaissance.split('-');
+                    document.getElementById('ui_date').innerText = parts[2] + '/' + parts[1] + '/' + parts[0];
+                    
+                    document.getElementById('ui_email').innerText = res.adresseMail;
+
+                    document.getElementById('ui_classe').innerText = res.classe + 'ème (niveau ' + res.classe + ')';
+                    document.getElementById('ui_uai').innerText = res.etablissement.codeUai;
+                    document.getElementById('ui_etab_nom').innerText = res.etablissement.nom;
+                    document.getElementById('ui_etab_ville').innerText = res.etablissement.commune + ' (' + res.etablissement.departement + ')';
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données", error);
+            }
+        }
+
         window.onload = initPage;
-</script>
+    </script>
+</body>
+</html>
