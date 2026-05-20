@@ -30,6 +30,7 @@ import web.vue.GetMatiereSerialisation;
 import web.vue.SuccesSerialisation;
 import web.vue.ListeDemandesSerialisation;
 import web.vue.Serialisation;
+import web.vue.ValiderDemandeSerialisation;
 
 /**
  *
@@ -141,8 +142,8 @@ public class ActionServlet extends HttpServlet {
                     
                 case "valider_demande" : 
                     action = new ValiderDemandeAction();
-                    serialisation = new SuccesSerialisation();
-                    System.out.println("ça marche");
+                    serialisation = new ValiderDemandeSerialisation();
+
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;

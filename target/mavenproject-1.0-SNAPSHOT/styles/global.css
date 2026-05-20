@@ -94,9 +94,15 @@ input:focus {
     text-align: left;
 }
 
-.full-width { grid-column: span 2; }
+.full-width {
+    grid-column: span 2;
+}
 
-.field-group { text-align: left; margin-bottom: 15px; }
+.field-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
 .field-group label {
     display: block;
     font-size: 11px;
@@ -117,8 +123,18 @@ input:focus {
     font-weight: 600;
     margin-top: 15px;
 }
-.alert-error { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; }
-.alert-success { background: #f0fff4; border: 1px solid #9ae6b4; color: #2f855a; }
+
+.alert-error {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    color: #c53030;
+}
+
+.alert-success {
+    background: #f0fff4;
+    border: 1px solid #9ae6b4;
+    color: #2f855a;
+}
 
 select {
     width: 100%;
@@ -199,4 +215,73 @@ textarea {
 textarea:focus {
     outline: none;
     border-color: #1d63ed;
+}
+
+.result-box {
+    display: none;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 14px;
+    text-align: left;
+}
+
+.visio-box {
+    background-color: #f0f7ff;
+    border: 1px solid #cce4ff;
+}
+
+.visio-box .box-title {
+    font-weight: bold;
+    color: #1d63ed;
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.visio-box a {
+    color: #1d63ed;
+    text-decoration: underline;
+    word-break: break-all;
+}
+
+.intervenant-box {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.intervenant-box .avatar {
+    background-color: #bbf7d0;
+    color: #166534;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.intervenant-box-content {
+    display: flex;
+    align-items: center;
+}
+
+.intervenant-box .box-title {
+    font-weight: bold;
+    color: #166534;
+    font-size: 12px;
+}
+
+.intervenant-box .intervenant-name {
+    color: #166534;
+    font-size: 14px;
+}
+
+.error-box {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
 }

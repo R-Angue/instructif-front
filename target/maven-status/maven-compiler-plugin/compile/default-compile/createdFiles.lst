@@ -5,6 +5,7 @@ web\modele\GetMatiereAction.class
 web\modele\Action.class
 web\modele\ConnexionEleveAction.class
 web\vue\SuccesSerialisation.class
+web\vue\ValiderDemandeSerialisation.class
 web\modele\GetEleveFromIdAction.class
 web\modele\GetIntervenantFromIdAction.class
 web\vue\GetMatiereSerialisation.class
