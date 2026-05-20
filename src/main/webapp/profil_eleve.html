@@ -1,26 +1,193 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
 <html>
     <head>
-        <title>INSTRUCT'IF</title>
+        <title>INSTRUCT'IF - Mon Profil</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <h1>profil eleve</h1>
-        <a href='./matieres.html'><button>Matières</button></a>
-        <a href='./demander-soutien.html'><button>Demander de l'aide</button></a>
-    </body>
-</html>
+        <link rel="stylesheet" href="styles/global.css">
+        <script src="components/header.js" type="text/javascript" defer></script>
 
-<script>
+        <style>
+            .top-actions {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+            .link-text {
+                color: #718096;
+                text-decoration: none;
+            }
+            .btn-teal {
+                background-color: #2a9d8f;
+                color: white;
+                border: none;
+                padding: 10px 16px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: bold;
+            }
+            .btn-teal:hover {
+                background-color: #21867a;
+            }
+
+            .bandeau {
+                background-color: #f7fafc;
+                border-radius: 16px;
+                padding: 24px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                text-align: left;
+                margin-bottom: 30px;
+            }
+            .avatar {
+                width: 72px;
+                height: 72px;
+                background-color: #cce0ff;
+                color: #1d63ed;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 26px;
+                font-weight: bold;
+            }
+            .info-user p {
+                color: #718096;
+            }
+            .badge {
+                background-color: #ebf4ff;
+                color: #1d63ed;
+                padding: 4px 12px;
+                border-radius: 12px;
+                font-weight: bold;
+            }
+
+            h2 {
+                text-align: left;
+            }
+            
+            .card {
+                border: 1px solid #edf2f7;
+                border-radius: 16px;
+                padding: 0 20px;
+            }
+            
+            .card-row {
+                display: flex;
+                justify-content: space-between;
+                padding-block: 16px;
+                border-bottom: 1px solid #edf2f7;
+            }
+            .card-row:last-child {
+                border-bottom: none;
+            }
+            
+            .card-value {
+                font-weight: bold;
+            }
+            .text-blue {
+                color: #1d63ed;
+            }
+            .sub-value {
+                color: #a0aec0;
+                font-size: 13px;
+                font-weight: normal;
+                display: block;
+                margin-top: 2px;
+            }
+        </style>
+    </head>
+
+    <body>
+    <header-component></header-component>
+
+    <main>
+        <div class="top-actions">
+            <a href='./matieres.html' class="link-text">Matières</a>
+            <a href='./demander-soutien.html' class="btn-teal">Demander de l'aide</a>
+        </div>
+
+        <div class="bandeau">
+            <div class="avatar" id="ui_initiales">--</div>
+            <div class="info-user">
+                <h1 id="ui_nom_complet">Chargement...</h1>
+                <p id="ui_sous_titre">--</p>
+                <span class="badge">Élève</span>
+            </div>
+        </div>
+
+        <h2>Informations personnelles</h2>
+        <div class="card">
+            <div class="card-row">
+                <span>Nom</span>
+                <span class="card-value" id="ui_nom">--</span>
+            </div>
+            <div class="card-row">
+                <span>Prénom</span>
+                <span class="card-value" id="ui_prenom">--</span>
+            </div>
+            <div class="card-row">
+                <span>Date de naissance</span>
+                <span class="card-value" id="ui_date">--</span>
+            </div>
+            <div class="card-row">
+                <span>Adresse e-mail</span>
+                <span class="card-value text-blue" id="ui_email">--</span>
+            </div>
+        </div>
+
+        <h2>Informations scolaires</h2>
+        <div class="card">
+            <div class="card-row">
+                <span>Classe</span>
+                <span class="card-value" id="ui_classe">--</span>
+            </div>
+            <div class="card-row">
+                <span>Code UAI</span>
+                <span class="card-value" id="ui_uai">--</span>
+            </div>
+            <div class="card-row">
+                <span>Établissement</span>
+                <span class="card-value">
+                    <span id="ui_etab_nom">--</span>
+                    <span class="sub-value" id="ui_etab_ville">--</span>
+                </span>
+            </div>
+        </div>
+    </main>
+
+    <script>
         async function initPage() {
-            let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_eleve_from_id').then(r => r.json()).catch(() => null);
-            // TODO: Remplir la page
+            try {
+                let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_eleve_from_id').then(r => r.json());
+
+                if (res && res.succes) {
+                    document.getElementById('ui_initiales').innerText = res.prenom.charAt(0) + res.nom.charAt(0);
+                    document.getElementById('ui_nom_complet').innerText = res.prenom + ' ' + res.nom;
+                    document.getElementById('ui_sous_titre').innerText = res.classe + 'ème · ' + res.etablissement.nom + ', ' + res.etablissement.commune;
+
+                    document.getElementById('ui_nom').innerText = res.nom;
+                    document.getElementById('ui_prenom').innerText = res.prenom;
+
+                    let parts = res.dateNaissance.split('-');
+                    document.getElementById('ui_date').innerText = parts[2] + '/' + parts[1] + '/' + parts[0];
+
+                    document.getElementById('ui_email').innerText = res.adresseMail;
+
+                    document.getElementById('ui_classe').innerText = res.classe + 'ème (niveau ' + res.classe + ')';
+                    document.getElementById('ui_uai').innerText = res.etablissement.codeUai;
+                    document.getElementById('ui_etab_nom').innerText = res.etablissement.nom;
+                    document.getElementById('ui_etab_ville').innerText = res.etablissement.commune + ' (' + res.etablissement.departement + ')';
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données", error);
+            }
         }
-        
+
         window.onload = initPage;
-</script>
+    </script>
+</body>
+</html>
