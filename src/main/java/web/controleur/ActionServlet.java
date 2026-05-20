@@ -141,6 +141,11 @@ public class ActionServlet extends HttpServlet {
                     
                 case "valider_demande" : 
                     action = new ValiderDemandeAction();
+                    serialisation = new SuccesSerialisation();
+                    System.out.println("ça marche");
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
             }
         }
     }

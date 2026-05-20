@@ -91,7 +91,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 
 
 
-        let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=valider-demande', {
+        let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=valider_demande', {
             method: "POST",
             body: params
         }).then(r => r.json()).catch(() => null);
