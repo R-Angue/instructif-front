@@ -4,14 +4,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to c
 Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
 -->
 <html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="components/header.js" type="text/javascript" defer></script>
-        <link rel="stylesheet" href="styles/global.css">
-    </head>
-    <body>
+
+<head>
+    <title>TODO supply a title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="components/header.js" type="text/javascript" defer></script>
+    <link rel="stylesheet" href="styles/global.css">
+</head>
+
+<body>
     <header-component></header-component>
     <main>
         <h1>Demander de l'aide</h1>
@@ -36,6 +38,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         </div>
 
         <button id="valider" class="btn-primary">Valider la demande</button>
+
+        <div id="success-msg" class="alert alert-success" style="display: none; margin-top: 15px;">✓ Demande envoyée
+            avec succès !</div>
+        <div id="error-msg" class="alert alert-error" style="display: none; margin-top: 15px;">⚠ Erreur lors de l'envoi
+            de la demande</div>
     </main>
 
 </body>
@@ -53,7 +60,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         let matieresJSON = JSON.stringify(res);
         matieres = JSON.parse(matieresJSON);
 
-        // remplir le dropdown de matières
         Object.keys(matieres).forEach((matiere) => {
             var opt = document.createElement('option');
             opt.value = matiere;
@@ -70,7 +76,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             themeDropdown.remove(i);
         }
 
-        // remplir le dropdown de themes
         matieres[matiereActuelle].forEach((theme) => {
             var opt = document.createElement('option');
             opt.value = theme["id"];
@@ -82,7 +87,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     }
 
     async function validerDemande() {
-        //const errorDiv = document.getElementById("error-msg");
+        const errorDiv = document.getElementById("error-msg");
+        const successDiv = document.getElementById("success-msg");
 
         const params = new URLSearchParams({
             demande_theme: document.getElementById("themeDropdown").value,
@@ -96,7 +102,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             body: params
         }).then(r => r.json()).catch(() => null);
 
-        
+        if (res?.succes) {
+            errorDiv.style.display = "none";
+            successDiv.style.display = "flex";
+            setTimeout(() => {
+                window.location = "./profil_eleve.html";
+            }, 1500);
+        } else {
+            successDiv.style.display = "none";
+            errorDiv.style.display = "flex";
+        }
     }
 
     window.onload = initPage;
