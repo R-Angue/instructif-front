@@ -35,6 +35,9 @@ public class ValiderDemandeAction extends Action{
             request.setAttribute("succes", false);
         } else {
             request.setAttribute("succes", true);
+            request.setAttribute("url_visio", soutien.getLienVisio());
+            request.setAttribute("nom_intervenant", soutien.getIntervenant().getNom());
+            request.setAttribute("prenom_intervenant", soutien.getIntervenant().getPrenom());
         }
 
     }

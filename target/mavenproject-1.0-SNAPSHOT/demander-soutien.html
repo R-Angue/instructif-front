@@ -4,14 +4,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to c
 Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
 -->
 <html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="components/header.js" type="text/javascript" defer></script>
-        <link rel="stylesheet" href="styles/global.css">
-    </head>
-    <body>
+
+<head>
+    <title>Demande de soutien</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="components/header.js" type="text/javascript" defer></script>
+    <link rel="stylesheet" href="styles/global.css">
+</head>
+
+<body>
     <header-component></header-component>
     <main>
         <h1>Demander de l'aide</h1>
@@ -36,6 +38,25 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         </div>
 
         <button id="valider" class="btn-primary">Valider la demande</button>
+
+        <div id="visio-box" class="result-box visio-box">
+            <div class="box-title">🔗 LIEN VISIO GÉNÉRÉ</div>
+            <a href="#" id="visio-link" target="_blank"></a>
+        </div>
+
+        <div id="intervenant-box" class="result-box intervenant-box">
+            <div class="intervenant-box-content">
+                <div class="avatar" id="intervenant-avatar"></div>
+                <div class="intervenant-info">
+                    <div class="box-title">Intervenant assigné</div>
+                    <div class="intervenant-name" id="intervenant-name"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-box" class="result-box error-box">
+            ⚠ Erreur dans la création de la demande
+        </div>
     </main>
 
 </body>
@@ -53,7 +74,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         let matieresJSON = JSON.stringify(res);
         matieres = JSON.parse(matieresJSON);
 
-        // remplir le dropdown de matières
         Object.keys(matieres).forEach((matiere) => {
             var opt = document.createElement('option');
             opt.value = matiere;
@@ -70,7 +90,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             themeDropdown.remove(i);
         }
 
-        // remplir le dropdown de themes
         matieres[matiereActuelle].forEach((theme) => {
             var opt = document.createElement('option');
             opt.value = theme["id"];
@@ -82,7 +101,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     }
 
     async function validerDemande() {
-        //const errorDiv = document.getElementById("error-msg");
+        const errorBox = document.getElementById("error-box");
+        const visioBox = document.getElementById("visio-box");
+        const intervenantBox = document.getElementById("intervenant-box");
 
         const params = new URLSearchParams({
             demande_theme: document.getElementById("themeDropdown").value,
@@ -96,7 +117,27 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             body: params
         }).then(r => r.json()).catch(() => null);
 
-        
+        if (res?.succes) {
+            errorBox.style.display = "none";
+
+            document.getElementById("visio-link").href = res.url_visio;
+            document.getElementById("visio-link").innerText = res.url_visio;
+
+            let prenom = res.prenom_intervenant || "";
+            let nom = res.nom_intervenant || "";
+            let initiales = (prenom.charAt(0) + nom.charAt(0)).toUpperCase();
+
+            document.getElementById("intervenant-avatar").innerText = initiales;
+            document.getElementById("intervenant-name").innerText = `${prenom} ${nom}`;
+
+            visioBox.style.display = "block";
+            intervenantBox.style.display = "block";
+
+        } else {
+            visioBox.style.display = "none";
+            intervenantBox.style.display = "none";
+            errorBox.style.display = "block";
+        }
     }
 
     window.onload = initPage;
