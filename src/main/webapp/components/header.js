@@ -1,12 +1,10 @@
 class Header extends HTMLElement {
     constructor() {
         super();
-        // 1. On crée une racine "Shadow" (le mode 'open' permet d'y accéder via JS si besoin)
         this.attachShadow({mode: 'open'});
     }
 
     connectedCallback() {
-        // 2. On injecte le contenu dans le shadowRoot au lieu de innerHTML
         this.shadowRoot.innerHTML = `
       <style>
         header {
@@ -49,18 +47,39 @@ class Header extends HTMLElement {
 
       <header>
         <nav>
-          <ul>
+          <ul id="nav-list">
             <li><a href="index.html">Accueil</a></li>
-            <li><a href="connexion.html">Connexion</a></li>
-            <li><a href="inscription.html" class="btn-signup">Créer un compte</a></li>
+            <!-- Les liens seront injectés ici par JS -->
           </ul>
         </nav>
       </header>
         
       <script>
-
+        // Cette partie s'exécute dans le shadow DOM, mais de façon générale il vaut mieux écrire la logique JS dans la classe.
       </script>
     `;
+
+        this.checkConnexion();
+    }
+
+    async checkConnexion() {
+        try {
+            const res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=check_connexion').then(r => r.json());
+            const navList = this.shadowRoot.getElementById('nav-list');
+            
+            if (res.succes) {
+                if (res.type === "eleve") {
+                    navList.insertAdjacentHTML('beforeend', '<li><a href="profil_eleve.html">Profil élève</a></li>');
+                } else if (res.type === "intervenant") {
+                    navList.insertAdjacentHTML('beforeend', '<li><a href="profil_intervenant.html">Profil intervenant</a></li>');
+                }
+            } else {
+                navList.insertAdjacentHTML('beforeend', '<li><a href="connexion.html">Connexion</a></li>');
+                navList.insertAdjacentHTML('beforeend', '<li><a href="inscription.html" class="btn-signup">Créer un compte</a></li>');
+            }
+        } catch (e) {
+            console.error("Erreur lors de la vérification de la connexion:", e);
+        }
     }
 }
 
