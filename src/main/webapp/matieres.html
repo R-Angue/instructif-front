@@ -1,25 +1,98 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
 <html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <h1>Matières</h1>
-        <div>TODO write content</div>
-    </body>
-    
+
+<head>
+    <title>Matières</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/global.css">
+    <script src="components/header.js" type="text/javascript" defer></script>
+
+    <style>
+        .matieres-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .matiere-item {
+            border: 1px solid #edf2f7;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            background: #ffffff;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            display: inline-block;
+            background-color: #ebf4ff;
+            color: #1d63ed;
+        }
+
+        .sub-value {
+            color: #718096;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <header-component></header-component>
+
+    <main>
+        <h1 style="text-align: left;">Matières</h1>
+
+        <div id="matieres-container" class="matieres-grid">
+        </div>
+    </main>
+
     <script>
+        var matieres;
+
         async function initPage() {
             let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_matiere').then(r => r.json()).catch(() => null);
 
+            if (res) {
+                let matieresJSON = JSON.stringify(res);
+                matieres = JSON.parse(matieresJSON);
+            } else {
+                matieres = {};
+            }
+
+            const container = document.getElementById('matieres-container');
+            container.innerHTML = '';
+
+            Object.keys(matieres).forEach((matiere) => {
+                matieres[matiere].forEach((theme) => {
+                    const div = document.createElement('div');
+                    div.className = 'matiere-item';
+
+                    const badge = document.createElement('span');
+                    badge.className = 'badge';
+                    badge.textContent = matiere;
+
+                    const subValue = document.createElement('span');
+                    subValue.className = 'sub-value';
+                    subValue.textContent = theme["nom"];
+
+                    div.appendChild(badge);
+                    div.appendChild(subValue);
+                    container.appendChild(div);
+                });
+            });
         }
-        
+
         window.onload = initPage;
     </script>
+</body>
+
 </html>
