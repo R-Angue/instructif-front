@@ -17,34 +17,42 @@ import metier.service.Service;
  *
  * @author ranguenot
  */
-public class GetIntervenantFromIdAction extends Action{
+public class GetIntervenantFromIdAction extends Action {
     @Override
     public void execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Long id = (Long) session.getAttribute("utilisateur_id");
-        
+
         Service service = new Service();
         Intervenant intervenant = service.findByIdIntervenant(id);
-        
-        if(intervenant == null){
+
+        if (intervenant == null) {
             request.setAttribute("succes", false);
             request.setAttribute("intervenant", null);
             request.setAttribute("soutiens_en_cours", null);
-        }
-        else{
+            request.setAttribute("nb_soutiens", 0);
+            request.setAttribute("avg_duree", 0.0);
+            request.setAttribute("nb_eleves", 0);
+            request.setAttribute("nb_etablissements", 0);
+        } else {
             List<Soutien> soutiens = service.historiqueIntervenant(intervenant);
-            List<Soutien> soutiens_en_cours = new ArrayList<>();;
-            
+            List<Soutien> soutiens_en_cours = new ArrayList<>();
+            ;
+
             for (Soutien soutien : soutiens) {
                 if (soutien.getBilan() == null && soutien.getDuree() == 0) {
                     soutiens_en_cours.add(soutien);
                 }
             }
-            
+
             request.setAttribute("succes", true);
             request.setAttribute("intervenant", intervenant);
             request.setAttribute("soutiens_en_cours", soutiens_en_cours);
+            request.setAttribute("nb_soutiens", service.getNbSoutiensParIntervenant(intervenant));
+            request.setAttribute("avg_duree", service.getAvgDureeParIntervenant(intervenant));
+            request.setAttribute("nb_eleves", service.getNbEleveParIntervenant(intervenant));
+            request.setAttribute("nb_etablissements", service.getNbEtablissementParIntervenant(intervenant));
         }
-        
+
     }
 }
