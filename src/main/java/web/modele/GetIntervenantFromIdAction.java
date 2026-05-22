@@ -6,8 +6,11 @@ package web.modele;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 import metier.modele.Eleve;
 import metier.modele.Intervenant;
+import metier.modele.Soutien;
 import metier.service.Service;
 
 /**
@@ -26,16 +29,21 @@ public class GetIntervenantFromIdAction extends Action{
         if(intervenant == null){
             request.setAttribute("succes", false);
             request.setAttribute("intervenant", null);
+            request.setAttribute("soutiens_en_cours", null);
         }
         else{
+            List<Soutien> soutiens = service.historiqueIntervenant(intervenant);
+            List<Soutien> soutiens_en_cours = new ArrayList<>();;
+            
+            for (Soutien soutien : soutiens) {
+                if (soutien.getBilan() == null && soutien.getDuree() == 0) {
+                    soutiens_en_cours.add(soutien);
+                }
+            }
+            
             request.setAttribute("succes", true);
             request.setAttribute("intervenant", intervenant);
-//            request.setAttribute("nom", eleve.getNom());
-//            request.setAttribute("prenom", eleve.getPrenom());
-//            request.setAttribute("DateNaissance", eleve.getDateDeNaissance());
-//            request.setAttribute("adresseMail", eleve.getMail());
-//            request.setAttribute("classe", eleve.getClasse());
-//            request.setAttribute("nom", eleve.getNom());
+            request.setAttribute("soutiens_en_cours", soutiens_en_cours);
         }
         
     }

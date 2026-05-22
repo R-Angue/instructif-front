@@ -5,12 +5,16 @@
 package web.vue;
 
 import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.util.List;
 import metier.modele.Intervenant;
+import metier.modele.Soutien;
 
 /**
  *
@@ -22,8 +26,12 @@ public class GetIntervenantFromIdSerialisation extends Serialisation {
     public void appliquer(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (PrintWriter out = response.getWriter()) {
             Intervenant intervenant = (Intervenant) request.getAttribute("intervenant");
+            List<Soutien> soutiens_en_cours = (List<Soutien>) request.getAttribute("soutiens_en_cours");
+
             JsonObjectBuilder jsonContainer = Json.createObjectBuilder();
             jsonContainer.add("succes", (Boolean) request.getAttribute("succes"));
+
+            JsonArrayBuilder soutiensJSONArray = Json.createArrayBuilder();
 
             if (intervenant != null) {
                 jsonContainer.add("nom", intervenant.getNom());
@@ -33,6 +41,30 @@ public class GetIntervenantFromIdSerialisation extends Serialisation {
                 jsonContainer.add("nbInterventions", intervenant.getNbInterventions());
 
             }
+
+            if (soutiens_en_cours != null) {
+                for (Soutien soutien : soutiens_en_cours) {
+                    JsonObjectBuilder soutienContainer = Json.createObjectBuilder();
+
+                    // Ajout des attributs simples (id et duree sont des primitifs/non-nuls)
+                    soutienContainer.add("id", soutien.getId());
+                    soutienContainer.add("duree", soutien.getDuree());
+
+                    soutienContainer.add("lienVisio", soutien.getLienVisio() != null ? soutien.getLienVisio() : "");
+                    soutienContainer.add("description", soutien.getDescription() != null ? soutien.getDescription() : "");
+                    soutienContainer.add("bilan", soutien.getBilan() != null ? soutien.getBilan() : "En attente");
+
+                    soutienContainer.add("date", soutien.getDate() != null ? soutien.getDate().toString() : "");
+
+                    soutienContainer.add("theme", soutien.getTheme() != null ? soutien.getTheme().getNom() : "");
+                    soutienContainer.add("elevePrenom", soutien.getEleve() != null ? soutien.getEleve().getPrenom() : "");
+                    soutienContainer.add("eleveNom", soutien.getEleve() != null ? soutien.getEleve().getNom() : "");
+
+                    soutiensJSONArray.add(soutienContainer);
+                }
+            }
+
+            jsonContainer.add("soutiens", soutiensJSONArray);
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
