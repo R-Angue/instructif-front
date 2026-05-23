@@ -18,6 +18,7 @@ import web.modele.CheckEtablissementExiste;
 import web.modele.ConnexionEleveAction;
 import web.modele.ConnexionIntervenantAction;
 import web.modele.ConsulterListeDemandesAction;
+import web.modele.DeconnexionAction;
 import web.modele.FinirSoutienAction;
 import web.modele.GetEleveFromIdAction;
 import web.modele.GetHistoriqueAction;
@@ -39,7 +40,7 @@ import web.vue.ValiderDemandeSerialisation;
  *
  * @author ranguenot
  */
-@WebServlet(name = "ActionServlet", urlPatterns = {"/ActionServlet"})
+@WebServlet(name = "ActionServlet", urlPatterns = { "/ActionServlet" })
 public class ActionServlet extends HttpServlet {
 
     @Override
@@ -59,10 +60,10 @@ public class ActionServlet extends HttpServlet {
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -114,6 +115,13 @@ public class ActionServlet extends HttpServlet {
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;
+                case "deconnexion":
+                    action = new DeconnexionAction();
+                    serialisation = new SuccesSerialisation();
+
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
                 case "check_etablissement":
                     action = new CheckEtablissementExiste();
                     serialisation = new EtablissementSerialisation();
@@ -135,31 +143,31 @@ public class ActionServlet extends HttpServlet {
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;
-                case "get_matiere" : 
+                case "get_matiere":
                     action = new GetMatiereAction();
                     serialisation = new GetMatiereSerialisation();
-                    
+
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;
-                    
-                case "valider_demande" : 
+
+                case "valider_demande":
                     action = new ValiderDemandeAction();
                     serialisation = new ValiderDemandeSerialisation();
 
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;
-                    
-                case "finir_soutien" : 
+
+                case "finir_soutien":
                     action = new FinirSoutienAction();
                     serialisation = new SuccesSerialisation();
 
                     action.execute(request);
                     serialisation.appliquer(request, response);
                     break;
-                    
-                case "get_historique" :
+
+                case "get_historique":
                     action = new GetHistoriqueAction();
                     serialisation = new GetHistoriqueSerialisation();
 
@@ -170,14 +178,15 @@ public class ActionServlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -188,10 +197,10 @@ public class ActionServlet extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -43,6 +43,20 @@ class Header extends HTMLElement {
           padding: 8px 15px;
           border-radius: 5px;
         }
+
+        .btn-logout {
+          background: transparent;
+          border: 1px solid #fff;
+          color: #fff;
+          padding: 8px 15px;
+          border-radius: 5px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .btn-logout:hover {
+          background: rgba(255, 255, 255, 0.12);
+        }
       </style>
 
       <header>
@@ -73,6 +87,11 @@ class Header extends HTMLElement {
                 } else if (res.type === "intervenant") {
                     navList.insertAdjacentHTML('beforeend', '<li><a href="profil_intervenant.html">Profil intervenant</a></li>');
                 }
+              navList.insertAdjacentHTML('beforeend', '<li><button type="button" id="logout-btn" class="btn-logout">Déconnexion</button></li>');
+              const logoutBtn = this.shadowRoot.getElementById('logout-btn');
+              if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => this.logout());
+              }
             } else {
                 navList.insertAdjacentHTML('beforeend', '<li><a href="connexion.html">Connexion</a></li>');
                 navList.insertAdjacentHTML('beforeend', '<li><a href="inscription.html" class="btn-signup">Créer un compte</a></li>');
@@ -81,6 +100,18 @@ class Header extends HTMLElement {
             console.error("Erreur lors de la vérification de la connexion:", e);
         }
     }
+
+        async logout() {
+          try {
+            await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=deconnexion', {
+              method: 'POST'
+            });
+          } catch (e) {
+            console.error("Erreur lors de la déconnexion:", e);
+          } finally {
+            window.location.reload();
+          }
+        }
 }
 
 customElements.define('header-component', Header);
