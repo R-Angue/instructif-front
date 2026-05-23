@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>INSTRUCT'IF - Mon Profil</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/global.css">
+    <script src="components/header.js" type="text/javascript" defer></script>
+</head>
+
+<body>
+    <header-component></header-component>
+
+    <main>
+
+    </main>
+
+    <script>
+        async function initPage() {
+            try {
+                const res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_historique')
+                        .then(r => r.json());
+
+
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données", error);
+            }
+        }
+
+        window.onload = initPage;
+    </script>
+</body>
+
+</html>
