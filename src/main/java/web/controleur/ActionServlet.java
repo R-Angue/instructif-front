@@ -20,12 +20,14 @@ import web.modele.ConnexionIntervenantAction;
 import web.modele.ConsulterListeDemandesAction;
 import web.modele.FinirSoutienAction;
 import web.modele.GetEleveFromIdAction;
+import web.modele.GetHistoriqueAction;
 import web.modele.GetIntervenantFromIdAction;
 import web.modele.GetMatiereAction;
 import web.modele.InscriptionAction;
 import web.modele.ValiderDemandeAction;
 import web.vue.EtablissementSerialisation;
 import web.vue.GetEleveFromIdSerialisation;
+import web.vue.GetHistoriqueSerialisation;
 import web.vue.GetIntervenantFromIdSerialisation;
 import web.vue.GetMatiereSerialisation;
 import web.vue.SuccesSerialisation;
@@ -152,6 +154,14 @@ public class ActionServlet extends HttpServlet {
                 case "finir_soutien" : 
                     action = new FinirSoutienAction();
                     serialisation = new SuccesSerialisation();
+
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
+                    
+                case "get_historique" :
+                    action = new GetHistoriqueAction();
+                    serialisation = new GetHistoriqueSerialisation();
 
                     action.execute(request);
                     serialisation.appliquer(request, response);
