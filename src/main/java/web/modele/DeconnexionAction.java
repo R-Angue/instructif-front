@@ -20,7 +20,8 @@ public class DeconnexionAction extends Action {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
-            session.invalidate();
+            session.setAttribute("utilisateur_id", null);
+            session.setAttribute("type", null);
         }
     }
 }
