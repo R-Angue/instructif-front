@@ -18,6 +18,7 @@ import web.modele.CheckEtablissementExiste;
 import web.modele.ConnexionEleveAction;
 import web.modele.ConnexionIntervenantAction;
 import web.modele.ConsulterListeDemandesAction;
+import web.modele.FinirSoutienAction;
 import web.modele.GetEleveFromIdAction;
 import web.modele.GetIntervenantFromIdAction;
 import web.modele.GetMatiereAction;
@@ -143,6 +144,14 @@ public class ActionServlet extends HttpServlet {
                 case "valider_demande" : 
                     action = new ValiderDemandeAction();
                     serialisation = new ValiderDemandeSerialisation();
+
+                    action.execute(request);
+                    serialisation.appliquer(request, response);
+                    break;
+                    
+                case "finir_soutien" : 
+                    action = new FinirSoutienAction();
+                    serialisation = new SuccesSerialisation();
 
                     action.execute(request);
                     serialisation.appliquer(request, response);

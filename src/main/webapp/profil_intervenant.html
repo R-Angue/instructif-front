@@ -212,8 +212,7 @@
 
         <h2>Soutiens en cours</h2>
         <div class="soutiens-list" id="ui_soutiens_list"></div>
-        <div class="empty-state" id="ui_soutiens_empty" style="display: none;">Aucun soutien en cours pour le moment.
-        </div>
+        <div class="empty-state" id="ui_soutiens_empty" style="display: none;">Aucun soutien en cours pour le moment.</div>
     </main>
 
     <script>
@@ -274,10 +273,11 @@
                 const item = document.createElement("div");
                 item.className = "soutien-item";
 
-                const theme = soutien.theme || "Thème non renseigné";
-                const eleve = `${soutien.elevePrenom || ""} ${soutien.eleveNom || ""}`.trim();
+                const theme = soutien.theme;
+                const eleve = `${soutien.elevePrenom} ${soutien.eleveNom}`.trim();
                 const date = formatDate(soutien.date);
 
+                // Utilisation d'un ID unique basé sur l'ID du soutien pour le textarea et le bouton
                 item.innerHTML = `
                         <div class="soutien-header">
                             <div>
@@ -287,17 +287,31 @@
                             <div class="soutien-meta">${date}</div>
                         </div>
                         <div class="soutien-meta">${soutien.description || "Description non renseignée"}</div>
-                        ${soutien.lienVisio ? `<a class="soutien-link" href="${soutien.lienVisio}" target="_blank" rel="noopener">Lien visio</a>` : ""}
+                        <a class="soutien-link" href="${soutien.lienVisio}" target="_blank">Lien visio</a>
+                        
+                        <div class="finir_soutien">
+                            <div class="field-group">
+                                <label>Commentaires de fin de visio</label>
+                                <textarea id="description-${soutien.id}" rows="4" cols="50" placeholder='Commentaires...'></textarea>
+                                <button class="btn-primary" id="btn-${soutien.id}">Marquer comme fini</button>
+                            </div>
+                        </div>
                     `;
 
                 list.appendChild(item);
+
+                // Attachement de l'écouteur d'événement directement sur le bouton créé
+                const btn = item.querySelector(`#btn-${soutien.id}`);
+                if (btn) {
+                    btn.addEventListener("click", () => finirSoutien(soutien.id));
+                }
             });
         }
 
         async function initPage() {
             try {
                 const res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_intervenant_from_id')
-                    .then(r => r.json());
+                        .then(r => r.json());
 
                 if (res && res.succes) {
                     document.getElementById('ui_initiales').innerText = res.prenom.charAt(0) + res.nom.charAt(0);
@@ -320,6 +334,36 @@
                 }
             } catch (error) {
                 console.error("Erreur lors de la récupération des données", error);
+            }
+        }
+
+        async function finirSoutien(soutienId) {
+            const errorBox = document.getElementById("error-box");
+
+            // Récupération dynamique du textarea correspondant au soutien cliqué
+            const textarea = document.getElementById(`description-${soutienId}`);
+            const commentaire = textarea ? textarea.value : "";
+
+            const params = new URLSearchParams({
+                soutien_id: soutienId,
+                soutien_commentaire: commentaire
+            });
+
+            try {
+                let res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=finir_soutien', {
+                    method: "POST",
+                    body: params
+                }).then(r => r.json());
+
+                if (res?.succes) {
+                    if (errorBox) errorBox.style.display = "none";
+                    initPage(); 
+                } else {
+                    if (errorBox) errorBox.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Erreur lors de la clôture du soutien", error);
+                if (errorBox) errorBox.style.display = "block";
             }
         }
 

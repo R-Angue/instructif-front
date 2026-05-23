@@ -11,6 +11,7 @@ web\modele\GetIntervenantFromIdAction.class
 web\vue\GetMatiereSerialisation.class
 web\vue\Serialisation.class
 web\modele\ConsulterListeDemandesAction.class
+web\modele\FinirSoutienAction.class
 web\modele\InscriptionAction.class
 web\vue\EtablissementSerialisation.class
 web\vue\GetEleveFromIdSerialisation.class
