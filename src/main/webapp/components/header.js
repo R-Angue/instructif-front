@@ -42,21 +42,9 @@ class Header extends HTMLElement {
           border: 1px solid #fff;
           padding: 8px 15px;
           border-radius: 5px;
-        }
-
-        .btn-logout {
-          background: transparent;
-          border: 1px solid #fff;
-          color: #fff;
-          padding: 8px 15px;
-          border-radius: 5px;
-          font-weight: 700;
           cursor: pointer;
         }
 
-        .btn-logout:hover {
-          background: rgba(255, 255, 255, 0.12);
-        }
       </style>
 
       <header>
@@ -87,7 +75,7 @@ class Header extends HTMLElement {
                 } else if (res.type === "intervenant") {
                     navList.insertAdjacentHTML('beforeend', '<li><a href="profil_intervenant.html">Profil intervenant</a></li>');
                 }
-              navList.insertAdjacentHTML('beforeend', '<li><button type="button" id="logout-btn" class="btn-logout">Déconnexion</button></li>');
+              navList.insertAdjacentHTML('beforeend', '<li><a type="button" id="logout-btn" class="btn-signup">Déconnexion</a></li>');
               const logoutBtn = this.shadowRoot.getElementById('logout-btn');
               if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => this.logout());

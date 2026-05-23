@@ -13,6 +13,28 @@
             text-align: left;
         }
 
+        .top-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn-outline {
+            background-color: #ebf4ff;
+            color: #1d63ed;
+            border: 1px solid #1d63ed;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn-outline:hover {
+            background-color: #dbeafe;
+        }
+
         .bandeau {
             background-color: #f7fafc;
             border-radius: 16px;
@@ -159,6 +181,9 @@
     <header-component></header-component>
 
     <main>
+        <div class="top-actions">
+            <a href='./historique.html' class="btn-outline">Historique</a>
+        </div>
         <div class="bandeau">
             <div class="avatar" id="ui_initiales">--</div>
             <div class="info-user">
@@ -210,7 +235,8 @@
 
         <h2>Soutiens en cours</h2>
         <div class="soutiens-list" id="ui_soutiens_list"></div>
-        <div class="empty-state" id="ui_soutiens_empty" style="display: none;">Aucun soutien en cours pour le moment.</div>
+        <div class="empty-state" id="ui_soutiens_empty" style="display: none;">Aucun soutien en cours pour le moment.
+        </div>
     </main>
 
     <script>
@@ -309,7 +335,7 @@
         async function initPage() {
             try {
                 const res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_intervenant_from_id')
-                        .then(r => r.json());
+                    .then(r => r.json());
 
                 if (res && res.succes) {
                     document.getElementById('ui_initiales').innerText = res.prenom.charAt(0) + res.nom.charAt(0);
@@ -355,7 +381,7 @@
 
                 if (res?.succes) {
                     if (errorBox) errorBox.style.display = "none";
-                    initPage(); 
+                    initPage();
                 } else {
                     if (errorBox) errorBox.style.display = "block";
                 }
