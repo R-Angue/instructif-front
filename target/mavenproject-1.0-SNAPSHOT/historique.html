@@ -7,24 +7,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/global.css">
     <script src="components/header.js" type="text/javascript" defer></script>
+    <style>
+        main {
+            text-align: left;
+        }
+        
+        .soutiens-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .soutien-item {
+            border: 1px solid #edf2f7;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #ffffff;
+        }
+
+        .soutien-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .soutien-title {
+            font-weight: bold;
+            color: #1a202c;
+        }
+
+        .soutien-link {
+            color: #1d63ed;
+            text-decoration: none;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .soutien-section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .empty-state {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px dashed #e2e8f0;
+            margin-top: 16px;
+        }
+    </style>
 </head>
 
 <body>
     <header-component></header-component>
 
     <main>
-
+        <h1>Historique des soutiens</h1>
+        <div class="soutiens-list" id="ui_soutiens_list"></div>
+        <div class="empty-state" id="ui_soutiens_empty" style="display: none;">Aucun soutien dans l'historique pour le
+            moment.</div>
     </main>
 
     <script>
+        function formatDate(dateString) {
+            if (!dateString) {
+                return "";
+            }
+            const parsed = new Date(dateString);
+            if (Number.isNaN(parsed.getTime())) {
+                return dateString;
+            }
+            return parsed.toLocaleDateString("fr-FR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+        }
+
+        function formatDuration(minutes) {
+            if (minutes === null || minutes === undefined) {
+                return "Durée non renseignée";
+            }
+            const value = Number(minutes);
+            if (Number.isNaN(value)) {
+                return "Durée non renseignée";
+            }
+            return `${value} min`;
+        }
+
+        function renderSoutiens(soutiens) {
+            const list = document.getElementById("ui_soutiens_list");
+            const empty = document.getElementById("ui_soutiens_empty");
+            list.innerHTML = "";
+
+            if (!soutiens || soutiens.length === 0) {
+                empty.style.display = "block";
+                return;
+            }
+
+            empty.style.display = "none";
+            soutiens.forEach((soutien) => {
+                const item = document.createElement("div");
+                item.className = "soutien-item";
+
+                const eleve = `${soutien.elevePrenom ?? ""} ${soutien.eleveNom ?? ""}`.trim();
+                const date = formatDate(soutien.date);
+
+                const description = soutien.description || "Description non renseignée";
+                const bilan = soutien.bilan || "Bilan non renseigné";
+
+                const lienVisio = soutien.lienVisio ? `<a class="soutien-link" href="${soutien.lienVisio}" target="_blank">Lien visio</a>` : "";
+
+                item.innerHTML = `
+                    <div class="soutien-header">
+                        <div>
+                            <div class="soutien-title">${soutien.theme ?? "Thème non renseigné"}</div>
+                            <div class="soutien-meta">${eleve ? "Élève : " + eleve : "Élève non renseigné"}</div>
+                        </div>
+                        <div class="soutien-meta">${date}</div>
+                    </div>
+                    <div class="soutien-meta">Durée : ${formatDuration(soutien.duree)}</div>
+                    ${lienVisio}
+                    <div>
+                        <div class="soutien-section-title">Demande</div>
+                        <div class="soutien-meta">${description}</div>
+                    </div>
+                    <div>
+                        <div class="soutien-section-title">Bilan</div>
+                        <div class="soutien-meta">${bilan}</div>
+                    </div>
+                `;
+
+                list.appendChild(item);
+            });
+        }
+
         async function initPage() {
             try {
                 const res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_historique')
-                        .then(r => r.json());
+                    .then(r => r.json());
 
-
+                renderSoutiens(res?.soutiens);
             } catch (error) {
                 console.error("Erreur lors de la récupération des données", error);
+                renderSoutiens([]);
             }
         }
 
