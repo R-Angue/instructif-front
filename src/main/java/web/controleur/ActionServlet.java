@@ -25,7 +25,7 @@ import web.modele.GetHistoriqueAction;
 import web.modele.GetIntervenantFromIdAction;
 import web.modele.GetMatiereAction;
 import web.modele.InscriptionAction;
-import web.modele.ListerEtablissementAction;
+import web.modele.GetGlobalStatsAction;
 import web.modele.ValiderDemandeAction;
 import web.vue.EtablissementSerialisation;
 import web.vue.GetEleveFromIdSerialisation;
@@ -34,7 +34,7 @@ import web.vue.GetIntervenantFromIdSerialisation;
 import web.vue.GetMatiereSerialisation;
 import web.vue.SuccesSerialisation;
 import web.vue.ListeDemandesSerialisation;
-import web.vue.ListerEtablissementSerialisation;
+import web.vue.GetGlobalStatsSerialisation;
 import web.vue.Serialisation;
 import web.vue.ValiderDemandeSerialisation;
 
@@ -179,9 +179,9 @@ public class ActionServlet extends HttpServlet {
                     
                 case "get_liste_etablissement":
                     
-                    action = new ListerEtablissementAction();
+                    action = new GetGlobalStatsAction();
                     System.out.println("test Rentrer dans etablissement");
-                    serialisation = new ListerEtablissementSerialisation();
+                    serialisation = new GetGlobalStatsSerialisation();
                     
                     action.execute(request);
                     serialisation.appliquer(request, response);

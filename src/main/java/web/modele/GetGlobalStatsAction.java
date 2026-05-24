@@ -17,13 +17,14 @@ import metier.service.Service;
  *
  * @author ranguenot
  */
-public class ListerEtablissementAction extends Action {
+public class GetGlobalStatsAction extends Action {
 
     @Override
     public void execute(HttpServletRequest request) {
         Service service = new Service();
         List<Etablissement> etablissements = service.listeEtablissement();
-        
+        int nb_soutien_tot = service.getNbSoutien();
+        double avg_duree_tot = service.getAvgDureeTotal();
         List<Map<String, Object>> result = new ArrayList<>();
         
         for(Etablissement etablissement : etablissements) {
@@ -39,6 +40,8 @@ public class ListerEtablissementAction extends Action {
             result.add(obj);
         }
         request.setAttribute("etablissements", result);
+        request.setAttribute("nb_soutien_tot", nb_soutien_tot);
+        request.setAttribute("avg_duree_tot", avg_duree_tot);
 
     }
 ;

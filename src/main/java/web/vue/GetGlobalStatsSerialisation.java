@@ -19,12 +19,15 @@ import metier.modele.Etablissement;
  *
  * @author ranguenot
  */
-public class ListerEtablissementSerialisation extends Serialisation {
+public class GetGlobalStatsSerialisation extends Serialisation {
 
     @Override
     public void appliquer(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (PrintWriter out = response.getWriter()) {
             List<Map<String, Object>> etablissements = (List<Map<String, Object>>) request.getAttribute("etablissements");
+            int nb_soutien_tot = (int) request.getAttribute("nb_soutien_tot");
+            double avg_duree_tot = (double) request.getAttribute("avg_duree_tot");
+
             JsonObjectBuilder jsonContainer = Json.createObjectBuilder();
             JsonArrayBuilder jsonListeEtab = Json.createArrayBuilder();
             for (Map<String, Object> obj : etablissements) {
@@ -38,7 +41,6 @@ public class ListerEtablissementSerialisation extends Serialisation {
                 System.out.println(nb_soutien);
                 System.out.println(avg_duree);
 
-
                 JsonObjectBuilder jsonEtab = Json.createObjectBuilder();
                 jsonEtab.add("id", etablissement.getId());
                 jsonEtab.add("nom", etablissement.getNom());
@@ -51,6 +53,9 @@ public class ListerEtablissementSerialisation extends Serialisation {
 
             }
             jsonContainer.add("listeEtablissement", jsonListeEtab);
+            jsonContainer.add("nb_soutien_tot", nb_soutien_tot );
+            jsonContainer.add("avg_duree_tot", avg_duree_tot);
+
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
 

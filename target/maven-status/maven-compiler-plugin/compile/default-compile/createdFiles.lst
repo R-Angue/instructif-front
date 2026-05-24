@@ -1,12 +1,12 @@
 web\modele\ConnexionIntervenantAction.class
 web\vue\ValiderDemandeSerialisation.class
 web\modele\DeconnexionAction.class
+web\vue\GetGlobalStatsSerialisation.class
 web\vue\Serialisation.class
 web\modele\ConsulterListeDemandesAction.class
 web\modele\FinirSoutienAction.class
 web\modele\InscriptionAction.class
 web\vue\EtablissementSerialisation.class
-web\vue\ListerEtablissementSerialisation.class
 web\vue\ListeDemandesSerialisation.class
 web\modele\ValiderDemandeAction.class
 web\vue\GetIntervenantFromIdSerialisation.class
@@ -20,9 +20,9 @@ web\modele\Action.class
 web\modele\ConnexionEleveAction.class
 web\vue\SuccesSerialisation.class
 web\modele\GetEleveFromIdAction.class
+web\modele\GetGlobalStatsAction.class
 web\modele\GetIntervenantFromIdAction.class
 web\vue\GetMatiereSerialisation.class
-web\modele\ListerEtablissementAction.class
 web\vue\GetEleveFromIdSerialisation.class
 web\modele\CheckEtablissementExiste.class
 web\test\ServiceTest.class

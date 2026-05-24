@@ -14,7 +14,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
         <style>
-            .map-card {
+            .map-box {
                 padding: 40px;
             }
 
@@ -23,48 +23,126 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 height: 500px;
             }
 
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 16px;
+                margin-top: 12px;
+            }
+
+            .stat-card {
+                border: 1px solid #e2e8f0;
+                border-radius: 14px;
+                padding: 14px 16px;
+                background-color: #ffffff;
+            }
+
+            .stat-label {
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #718096;
+                font-weight: 700;
+                margin-bottom: 6px;
+            }
+
+            .stat-value {
+                font-size: 22px;
+                font-weight: 800;
+                color: #1a202c;
+            }
+
+
+            .card-map-stats{
+                display : grid;
+                grid-template-columns: auto auto 1fr;
+                column-gap: 24px;
+            }
+            .stats-group {
+                display : flex;
+                flex-direction: column;
+
+            }
+
+            .stats-label{
+                color : #8a99ad;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-size : 0.75rem;
+                font-weight : 600;
+                margin-bottom: 4px;
+            }
+
+            .stats-value{
+                color : #1a2b49;
+                font-size : 1.1rem;
+                font-weight: 700;
+            }
+
         </style>
     </head>
     <body>
     <header-component></header-component>
-    <div class="card map-card">
+    <div class="card map-box">
         <div id="map"></div>
     </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Durée moyenne global</div>
+            <div class="stat-value" id="ui_stats_duree">--</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Nombre total de Soutien</div>
+            <div class="stat-value" id="ui_stats_nb">--</div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 </body>
 
 <script>
-    async function initMap() {
+    async function initPage() {
 
         const map = L.map('map').setView([45.7640, 4.8357], 12);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
-        const res = await fetch(
-                'http://localhost:8080/mavenproject/ActionServlet?todo=get_liste_etablissement'
-                );
+        const res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=get_liste_etablissement');
         const data = await res.json();
         const listeEtablissement = data.listeEtablissement;
         listeEtablissement.forEach(p => {
             L.marker([p.latitude, p.longitude])
                     .addTo(map)
                     .bindPopup(`
-                    <div style="font-family: Arial;">
-                        <strong>${p.nom}</strong><br><br>
+                    <div class = "card-map">
+                        <h2 class="card-map-title">${p.nom}</h2>
 
-                        <div style="font-size: 12px; color: #555;">
-                            IPS | Étudiants | Durée moyenne
+                        <div class="card-map-stats">
+                            <div class="stats-group">
+                                <span class="stats-label">IPS</span>
+                                <span class="stats-value">${p.ips.toFixed(1)}</span>
+                            </div>
+                            <div class="stats-group">
+                                <span class="stats-label">Soutiens</span>
+                                <span class="stats-value">${p.nb_soutien}</span>
+                            </div>
+                            <div class="stats-group">
+                                <span class="stats-label">Durée_moy</span>
+                                <span class="stats-value">${p.avg_duree}</span>
+                            </div>
                         </div>
 
-                        <div style="font-size: 14px;">
-                            ${p.ips} | ${p.nb_soutien} | ${p.avg_duree}
-                        </div>
+                        
                     </div>
             `);
         });
+
+        document.getElementById('ui_stats_duree').innerText = data.avg_duree_tot;
+        document.getElementById('ui_stats_nb').innerText = data.nb_soutien_tot;
     }
 
-    window.onload = initMap;
+    window.onload = initPage;
 </script>
 </html>
