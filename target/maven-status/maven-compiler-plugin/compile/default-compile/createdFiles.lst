@@ -6,6 +6,7 @@ web\modele\ConsulterListeDemandesAction.class
 web\modele\FinirSoutienAction.class
 web\modele\InscriptionAction.class
 web\vue\EtablissementSerialisation.class
+web\vue\ListerEtablissementSerialisation.class
 web\vue\ListeDemandesSerialisation.class
 web\modele\ValiderDemandeAction.class
 web\vue\GetIntervenantFromIdSerialisation.class
@@ -21,6 +22,7 @@ web\vue\SuccesSerialisation.class
 web\modele\GetEleveFromIdAction.class
 web\modele\GetIntervenantFromIdAction.class
 web\vue\GetMatiereSerialisation.class
+web\modele\ListerEtablissementAction.class
 web\vue\GetEleveFromIdSerialisation.class
 web\modele\CheckEtablissementExiste.class
 web\test\ServiceTest.class
