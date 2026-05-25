@@ -10,6 +10,10 @@ class Header extends HTMLElement {
         header {
           background-color: #0a0a23;
           font-family: sans-serif;
+          position: fixed;
+          top: 0;
+          width: 100%;
+          height: 60px;
         }
 
         nav ul {
@@ -68,18 +72,18 @@ class Header extends HTMLElement {
         try {
             const res = await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=check_connexion').then(r => r.json());
             const navList = this.shadowRoot.getElementById('nav-list');
-            
+
             if (res.succes) {
                 if (res.type === "eleve") {
                     navList.insertAdjacentHTML('beforeend', '<li><a href="profil_eleve.html">Profil élève</a></li>');
                 } else if (res.type === "intervenant") {
                     navList.insertAdjacentHTML('beforeend', '<li><a href="profil_intervenant.html">Profil intervenant</a></li>');
                 }
-              navList.insertAdjacentHTML('beforeend', '<li><a type="button" id="logout-btn" class="btn-signup">Déconnexion</a></li>');
-              const logoutBtn = this.shadowRoot.getElementById('logout-btn');
-              if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => this.logout());
-              }
+                navList.insertAdjacentHTML('beforeend', '<li><a type="button" id="logout-btn" class="btn-signup">Déconnexion</a></li>');
+                const logoutBtn = this.shadowRoot.getElementById('logout-btn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', () => this.logout());
+                }
             } else {
                 navList.insertAdjacentHTML('beforeend', '<li><a href="connexion.html">Connexion</a></li>');
                 navList.insertAdjacentHTML('beforeend', '<li><a href="inscription.html" class="btn-signup">Créer un compte</a></li>');
@@ -89,17 +93,18 @@ class Header extends HTMLElement {
         }
     }
 
-        async logout() {
-          try {
+    async logout() {
+        try {
             await fetch('http://localhost:8080/mavenproject/ActionServlet?todo=deconnexion', {
-              method: 'POST'
+                method: 'POST'
             });
-          } catch (e) {
+        } catch (e) {
             console.error("Erreur lors de la déconnexion:", e);
-          } finally {
+        } finally {
+            window.location = "./index.html";
             window.location.reload();
-          }
         }
+    }
 }
 
 customElements.define('header-component', Header);

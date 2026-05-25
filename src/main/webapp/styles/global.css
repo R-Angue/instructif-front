@@ -8,6 +8,7 @@ body {
 }
 
 main {
+    padding-top: 60px;
     display: block;
     width: 90%;
     max-width: 440px;
